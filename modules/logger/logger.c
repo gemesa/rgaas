@@ -13,13 +13,12 @@
 
 enum
 {
-    FACILITY_FACTOR = 8,
     HOSTNAME_SIZE = 50
 };
 
-static unsigned int calc_pri(facility_t facility, severity_t severity)
+static unsigned int calc_pri(int facility, int severity)
 {
-    return facility * FACILITY_FACTOR + severity;
+    return facility + severity;
 }
 
 static void get_time(char *time_formatted)
@@ -64,7 +63,7 @@ static int logger_close(void *s)
     return status;
 }
 
-static int logger_write(void *s, char *msg, facility_t facility, severity_t severity)
+static int logger_write(void *s, char *msg, int facility, int severity)
 {
     logger_t *self = s;
     char time[sizeof "2022-11-02T08:00:00+01:00"];

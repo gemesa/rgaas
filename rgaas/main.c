@@ -3,6 +3,7 @@
 //
 
 #include <stdlib.h>
+#include <syslog.h>
 
 #include "../modules/logger/logger.h"
 
@@ -14,14 +15,14 @@ int main(void)
 
     if (status == EXIT_SUCCESS)
     {
-        logger->write(logger, "program started", USER, NOTICE);
+        logger->write(logger, "program started", LOG_USER, LOG_NOTICE);
     }
     else
     {
-        logger->write(logger, "program started (logger initialization failed, logging to stdout)", USER, ERROR);
+        logger->write(logger, "program started (logger initialization failed, logging to stdout)", LOG_USER, LOG_ERR);
     }
 
-    logger->write(logger, "program terminating...", USER, NOTICE);
+    logger->write(logger, "program terminating...", LOG_USER, LOG_NOTICE);
     logger->close(logger);
     logger->free(logger);
 

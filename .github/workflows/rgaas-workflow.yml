@@ -12,9 +12,26 @@ jobs:
       - name: CMake config
         run: cmake .
 
+      - name: Clang-Format
+        run: clang-format --dry-run -Werror src/main.c
+
+      - name: Clang-Tidy
+        run: clang-tidy -warnings-as-errors=* src/main.c
+
       - name: CMake build
         run: cmake --build .
 
+      - name: Valgrind (install)
+        run: sudo apt-get install valgrind -y
+
+      - name: Valgrind (run)
+        run: |
+          valgrind --leak-check=full \
+            --show-leak-kinds=all \
+            --track-origins=yes \
+            --verbose \
+            --error-exitcode=1 \
+            ./build/rgaas
       - name: Build unit tests (skipped)
         run: exit 0
 

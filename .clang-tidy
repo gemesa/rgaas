@@ -1,5 +1,21 @@
 ---
-Checks:          'clang-diagnostic-*,clang-analyzer-*,*,-llvmlibc-restrict-system-libc-headers,-*,cert-*,clang-analyzer-*,llvm-*,misc-*,modernize-*,performance-*,portability-*,readability-*,-llvmlibc-restrict-system-libc-headers,-readability-identifier-length,-llvm-header-guard'
+Checks:          'clang-diagnostic-*,
+clang-analyzer-*,
+*,
+-llvmlibc-restrict-system-libc-headers,
+-*,
+cert-*,
+clang-analyzer-*,
+llvm-*,
+misc-*,
+modernize-*,
+performance-*,
+portability-*,
+readability-*,
+-llvmlibc-restrict-system-libc-headers,
+-readability-identifier-length,
+-llvm-header-guard,
+-clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling'
 WarningsAsErrors: '*'
 HeaderFilterRegex: ''
 AnalyzeTemporaryDtors: false

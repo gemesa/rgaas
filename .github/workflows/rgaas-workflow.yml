@@ -16,7 +16,7 @@ jobs:
         run: clang-format --dry-run -Werror src/main.c
 
       - name: Clang-Tidy
-        run: clang-tidy -warnings-as-errors=* src/main.c
+        run: clang-tidy src/main.c
 
       - name: CMake build
         run: cmake --build .

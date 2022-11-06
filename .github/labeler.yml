@@ -1,0 +1,21 @@
+ci/cd:
+  - .github/**
+
+build:
+  - CMakeLists.txt
+  - .clang-format
+  - .clang-tidy
+
+documentation:
+  - LICENSE.md
+  - README.md
+  - ./*.md
+
+main:
+  - rgaas/**
+
+logger:
+  - modules/logger/**
+
+argparser:
+  - modules/argparser/**

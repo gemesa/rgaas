@@ -8,22 +8,21 @@
 
 int main(void)
 {
-    logger_t logger;
+    logger_t *logger = logger_new();
 
-    logger_initialize(&logger);
-    int status = logger.open(&logger, NULL, "a+");
+    int status = logger->open(logger, NULL, "a+");
 
     if (status == EXIT_SUCCESS)
     {
-        logger.write(&logger, "program started");
+        logger->write(logger, "program started");
     }
     else
     {
-        logger.write(&logger, "program started (logger initialization failed, logging to stdout)");
+        logger->write(logger, "program started (logger initialization failed, logging to stdout)");
     }
 
-    logger.write(&logger, "program terminating...");
-    logger.close(&logger);
+    logger->write(logger, "program terminating...");
+    logger->close(logger);
 
     return 0;
 }

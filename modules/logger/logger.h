@@ -16,6 +16,6 @@ typedef struct
     FILE *file;
 } logger_t;
 
-extern void logger_initialize(void *s);
+extern logger_t *logger_new(void);
 
 #endif//RGAAS_LOGGER_H

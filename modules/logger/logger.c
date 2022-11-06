@@ -46,7 +46,7 @@ static int logger_flush(void *s)
     return status;
 }
 
-void logger_initialize(void *s)
+static void logger_initialize(void *s)
 {
     logger_t *self = s;
     self->open = &logger_open;
@@ -54,4 +54,11 @@ void logger_initialize(void *s)
     self->write = &logger_write;
     self->flush = &logger_flush;
     self->file = NULL;
+}
+
+logger_t *logger_new(void)
+{
+    logger_t *self = malloc(sizeof(logger_t));
+    logger_initialize(self);
+    return self;
 }

@@ -6,6 +6,9 @@ build:
   - .clang-format
   - .clang-tidy
 
+chore:
+  - .gitignore
+
 documentation:
   - LICENSE.md
   - README.md

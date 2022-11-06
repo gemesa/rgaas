@@ -30,7 +30,6 @@ int main(void)
 
     while (!signal_flag)
     {
-
     }
 
     logger->write(logger, "program terminating...", LOG_USER, LOG_NOTICE);

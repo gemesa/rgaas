@@ -3,9 +3,11 @@
 //
 
 #include <netdb.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <syslog.h>
 #include <time.h>
 #include <unistd.h>
 
@@ -42,6 +44,12 @@ static void get_h_name(char *h_name)
 static int logger_open(void *s, char *filename, char *modes)
 {
     logger_t *self = s;
+
+    if (self->enable_syslog == true)
+    {
+        openlog("rgaas", LOG_PID, LOG_DAEMON);
+    }
+
     if (!filename)
     {
         self->file = stdout;
@@ -59,6 +67,10 @@ static int logger_open(void *s, char *filename, char *modes)
 static int logger_close(void *s)
 {
     logger_t *self = s;
+    if (self->enable_syslog == true)
+    {
+        closelog();
+    }
     int status = fclose(self->file);
     return status;
 }
@@ -66,9 +78,12 @@ static int logger_close(void *s)
 static int logger_write(void *s, char *msg, int facility, int severity)
 {
     logger_t *self = s;
+    if (self->enable_syslog == true)
+    {
+        syslog(LOG_NOTICE, "%s", msg);
+    }
     char time[sizeof "2022-11-02T08:00:00+01:00"];
     char h_name[HOSTNAME_SIZE];
-
     get_time(time);
     get_h_name(h_name);
     int status = fprintf(self->file, "%d %s %s rgaas - - - %s\n", calc_pri(facility, severity), time, h_name, msg);
@@ -97,6 +112,7 @@ static void logger_initialize(void *s)
     self->flush = &logger_flush;
     self->free = &logger_free;
     self->file = NULL;
+    self->enable_syslog = false;
 }
 
 logger_t *logger_new(void)

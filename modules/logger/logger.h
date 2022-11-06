@@ -5,6 +5,7 @@
 #ifndef RGAAS_LOGGER_H
 #define RGAAS_LOGGER_H
 
+#include <stdbool.h>
 #include <stdio.h>
 
 typedef struct
@@ -15,6 +16,7 @@ typedef struct
     int (*flush)(void *self);
     void (*free)(void *self);
     FILE *file;
+    bool enable_syslog;
 } logger_t;
 
 extern logger_t *logger_new(void);

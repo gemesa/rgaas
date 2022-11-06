@@ -269,7 +269,7 @@ CheckOptions:
   - key:             cppcoreguidelines-no-malloc.Allocations
     value:           '::malloc;::calloc'
   - key:             misc-throw-by-value-catch-by-reference.MaxSize
-    value:           '-1'
+    value:           '8'
   - key:             cppcoreguidelines-avoid-magic-numbers.IgnorePowersOf2IntegerValues
     value:           'false'
   - key:             bugprone-narrowing-conversions.IgnoreConversionFromTypes
@@ -349,7 +349,7 @@ CheckOptions:
   - key:             readability-identifier-naming.GetConfigPerFile
     value:           'true'
   - key:             cert-err61-cpp.MaxSize
-    value:           '-1'
+    value:           '8'
   - key:             cert-sig30-c.AsyncSafeFunctionSet
     value:           POSIX
   - key:             hicpp-member-init.UseAssignment
@@ -437,7 +437,7 @@ CheckOptions:
   - key:             readability-suspicious-call-argument.Suffix
     value:           'true'
   - key:             cert-err09-cpp.MaxSize
-    value:           '-1'
+    value:           '8'
   - key:             modernize-use-override.FinalSpelling
     value:           final
   - key:             hicpp-use-equals-default.IgnoreMacros

@@ -23,6 +23,7 @@ int main(void)
 
     logger->write(logger, "program terminating...");
     logger->close(logger);
+    logger->free(logger);
 
     return 0;
 }

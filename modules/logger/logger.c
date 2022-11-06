@@ -46,6 +46,12 @@ static int logger_flush(void *s)
     return status;
 }
 
+static void logger_free(void *s)
+{
+    logger_t *self = s;
+    free(self);
+}
+
 static void logger_initialize(void *s)
 {
     logger_t *self = s;
@@ -53,6 +59,7 @@ static void logger_initialize(void *s)
     self->close = &logger_close;
     self->write = &logger_write;
     self->flush = &logger_flush;
+    self->free = &logger_free;
     self->file = NULL;
 }
 

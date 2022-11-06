@@ -13,6 +13,7 @@ typedef struct
     int (*close)(void *self);
     int (*write)(void *self, char *msg);
     int (*flush)(void *self);
+    void (*free)(void *self);
     FILE *file;
 } logger_t;
 

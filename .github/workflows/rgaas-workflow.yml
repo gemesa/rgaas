@@ -13,10 +13,10 @@ jobs:
         run: cmake .
 
       - name: Clang-Format
-        run: clang-format --dry-run -Werror src/main.c
+        run: clang-format --dry-run -Werror rgaas/main.c
 
       - name: Clang-Tidy
-        run: clang-tidy src/main.c
+        run: clang-tidy rgaas/main.c
 
       - name: CMake build
         run: cmake --build .

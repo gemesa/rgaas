@@ -12,6 +12,7 @@ typedef struct
     int (*open)(void *self, char *filename, char *modes);
     int (*close)(void *self);
     int (*write)(void *self, char *msg);
+    int (*flush)(void *self);
     FILE *file;
 } logger_t;
 

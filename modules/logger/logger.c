@@ -25,6 +25,13 @@ static int logger_open(void *s, char *filename, char *modes)
     return EXIT_SUCCESS;
 }
 
+static int logger_close(void *s)
+{
+    logger_t *self = s;
+    int status = fclose(self->file);
+    return status;
+}
+
 static int logger_write(void *s, char *msg)
 {
     logger_t *self = s;
@@ -32,10 +39,10 @@ static int logger_write(void *s, char *msg)
     return status;
 }
 
-static int logger_close(void *s)
+static int logger_flush(void *s)
 {
     logger_t *self = s;
-    int status = fclose(self->file);
+    int status = fflush(self->file);
     return status;
 }
 
@@ -45,5 +52,6 @@ void logger_initialize(void *s)
     self->open = &logger_open;
     self->close = &logger_close;
     self->write = &logger_write;
+    self->flush = &logger_flush;
     self->file = NULL;
 }

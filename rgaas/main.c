@@ -14,14 +14,14 @@ int main(void)
 
     if (status == EXIT_SUCCESS)
     {
-        logger->write(logger, "program started");
+        logger->write(logger, "program started", USER, NOTICE);
     }
     else
     {
-        logger->write(logger, "program started (logger initialization failed, logging to stdout)");
+        logger->write(logger, "program started (logger initialization failed, logging to stdout)", USER, ERROR);
     }
 
-    logger->write(logger, "program terminating...");
+    logger->write(logger, "program terminating...", USER, NOTICE);
     logger->close(logger);
     logger->free(logger);
 

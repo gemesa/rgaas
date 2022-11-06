@@ -2,11 +2,43 @@
 // Created by gemesa on 11/3/22.
 //
 
+#include <netdb.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
+#include <unistd.h>
 
 #include "logger.h"
+
+enum
+{
+    FACILITY_FACTOR = 8,
+    HOSTNAME_SIZE = 50
+};
+
+static unsigned int calc_pri(facility_t facility, severity_t severity)
+{
+    return facility * FACILITY_FACTOR + severity;
+}
+
+static void get_time(char *time_formatted)
+{
+    time_t time_raw;
+    (void) time(&time_raw);
+    char time_tmp[sizeof "2022-11-02T08:00:00+01:00"];
+    (void) strftime(time_tmp, sizeof time_tmp, "%FT%T+01:00", gmtime(&time_raw));
+    (void) strncpy(time_formatted, time_tmp, sizeof(time_tmp));
+}
+
+static void get_h_name(char *h_name)
+{
+    char hostname[HOSTNAME_SIZE] = {[0 ... HOSTNAME_SIZE - 1] = '\0'};
+    gethostname(hostname, HOSTNAME_SIZE - 1);
+    struct hostent *h;
+    h = gethostbyname(hostname);
+    (void) strncpy(h_name, h->h_name, HOSTNAME_SIZE);
+}
 
 static int logger_open(void *s, char *filename, char *modes)
 {
@@ -32,10 +64,15 @@ static int logger_close(void *s)
     return status;
 }
 
-static int logger_write(void *s, char *msg)
+static int logger_write(void *s, char *msg, facility_t facility, severity_t severity)
 {
     logger_t *self = s;
-    int status = fprintf(self->file, "rgaas - %s\n", msg);
+    char time[sizeof "2022-11-02T08:00:00+01:00"];
+    char h_name[HOSTNAME_SIZE];
+
+    get_time(time);
+    get_h_name(h_name);
+    int status = fprintf(self->file, "%d %s %s rgaas - - - %s\n", calc_pri(facility, severity), time, h_name, msg);
     return status;
 }
 

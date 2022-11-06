@@ -8,10 +8,6 @@
 
 #include "logger.h"
 
-const messages_t messages = {.start = "program started",
-                             .start_logger_failed = "program started (logger initialization failed, logging to stdout)",
-                             .terminate = "program terminating..."};
-
 static int logger_open(void *s, char *filename, char *modes)
 {
     logger_t *self = s;

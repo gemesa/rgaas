@@ -15,14 +15,14 @@ int main(void)
 
     if (status == EXIT_SUCCESS)
     {
-        logger.write(&logger, messages.start);
+        logger.write(&logger, "program started");
     }
     else
     {
-        logger.write(&logger, messages.start_logger_failed);
+        logger.write(&logger, "program started (logger initialization failed, logging to stdout)");
     }
 
-    logger.write(&logger, messages.terminate);
+    logger.write(&logger, "program terminating...");
     logger.close(&logger);
 
     return 0;

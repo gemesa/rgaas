@@ -14,7 +14,7 @@ int main(int argc, char **argv)
 {
     if (register_signal_handler() == EXIT_FAILURE)
     {
-        exit(EXIT_FAILURE);
+        return EXIT_FAILURE;
     }
 
     argparser_t *argparser = argparser_new();
@@ -48,7 +48,7 @@ int main(int argc, char **argv)
         logger->close(logger);
         logger->free(logger);
         argparser->free(argparser);
-        exit(EXIT_FAILURE);
+        return EXIT_FAILURE;
     }
 
     if (argparser->args.process_mode == DAEMON_PROCESS)

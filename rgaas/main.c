@@ -73,5 +73,5 @@ int main(int argc, char **argv)
     logger->close(logger);
     logger->free(logger);
 
-    return 0;
+    return EXIT_SUCCESS;
 }

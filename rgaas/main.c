@@ -17,9 +17,7 @@ int main(void)
 
     logger_t *logger = logger_new();
 
-    int status = logger->open(logger, NULL, "a+");
-
-    if (status == EXIT_SUCCESS)
+    if (logger->open(logger, NULL, "a+") == EXIT_SUCCESS)
     {
         logger->write(logger, "program started", LOG_USER, LOG_NOTICE);
     }

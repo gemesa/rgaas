@@ -47,6 +47,7 @@ int main(int argc, char **argv)
         logger->write(logger, argparser->usage_info, LOG_USER, LOG_NOTICE);
         logger->close(logger);
         logger->free(logger);
+        argparser->free(argparser);
         exit(EXIT_FAILURE);
     }
 

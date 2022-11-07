@@ -6,9 +6,9 @@
 #include <syslog.h>
 #include <unistd.h>
 
-#include "../modules/argparser/argparser.h"
-#include "../modules/logger/logger.h"
-#include "../modules/signal_handler/signal_handler.h"
+#include "../../modules/argparser/argparser.h"
+#include "../../modules/logger/logger.h"
+#include "../../modules/signal_handler/signal_handler.h"
 
 int main(int argc, char **argv)
 {

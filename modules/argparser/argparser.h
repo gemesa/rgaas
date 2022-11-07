@@ -10,9 +10,9 @@
 typedef struct
 {
     bool syslog_enabled;
-    char* log_file;
+    char *log_file;
 } args_t;
 
 extern args_t argparse(int argc, char **argv);
 
-#endif //RGAAS_ARGPARSER_H
+#endif//RGAAS_ARGPARSER_H

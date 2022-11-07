@@ -73,7 +73,7 @@ static void logger_free(void *s)
     free(self);
 }
 
-static void logger_syslog_enable(void*s, bool flag)
+static void logger_syslog_enable(void *s, bool flag)
 {
     logger_t *self = s;
     self->syslog_enabled = flag;

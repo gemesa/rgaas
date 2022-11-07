@@ -9,17 +9,40 @@
 
 volatile sig_atomic_t signal_flag = 0;
 
-static void signal_handler(int signum)
+static void signal_handler_handle(int signal)
 {
-    (void) signum;
+    (void) signal;
     signal_flag = 1;
 }
 
-int register_signal_handler(void)
+static int signal_handler_set(void *s)
 {
-    if (signal(SIGINT, signal_handler) == SIG_ERR)
+    signal_handler_t *self = s;
+    if (signal(SIGINT, self->handle) == SIG_ERR)
     {
         return EXIT_FAILURE;
     }
     return EXIT_SUCCESS;
+}
+
+static void signal_handler_free(void *s)
+{
+    signal_handler_t *self = s;
+    free(self);
+}
+
+static void signal_handler_initialize(void *s)
+{
+    signal_handler_t *self = s;
+    self->set = &signal_handler_set;
+    self->handle = &signal_handler_handle;
+    self->free = &signal_handler_free;
+    signal_flag = 0;
+}
+
+signal_handler_t *signal_handler_new(void)
+{
+    signal_handler_t *self = malloc(sizeof(signal_handler_t));
+    signal_handler_initialize(self);
+    return self;
 }

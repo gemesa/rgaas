@@ -12,17 +12,10 @@
 
 int main(int argc, char **argv)
 {
-    if (register_signal_handler() == EXIT_FAILURE)
-    {
-        return EXIT_FAILURE;
-    }
-
     argparser_t *argparser = argparser_new();
-
-    argparser->parse(argparser, argc, argv);
-
     logger_t *logger = logger_new();
 
+    argparser->parse(argparser, argc, argv);
     logger->enable_verbose_output(logger, argparser->args.verbose_output);
     logger->enable_syslog(logger, argparser->args.syslog_enabled);
 
@@ -33,6 +26,18 @@ int main(int argc, char **argv)
     else
     {
         logger->write(logger, "program started (logger initialization failed, logging to stdout)", LOG_USER, LOG_ERR);
+    }
+
+    signal_handler_t * signal_handler = signal_handler_new();
+
+    if (signal_handler->set(signal_handler) == EXIT_FAILURE)
+    {
+        logger->write(logger, "setting signal handler failed, program terminating...", LOG_USER, LOG_ERR);
+        logger->close(logger);
+        logger->free(logger);
+        argparser->free(argparser);
+        signal_handler->free(signal_handler);
+        return EXIT_FAILURE;
     }
 
     if (argparser->status == EXIT_SUCCESS)
@@ -48,6 +53,7 @@ int main(int argc, char **argv)
         logger->close(logger);
         logger->free(logger);
         argparser->free(argparser);
+        signal_handler->free(signal_handler);
         return EXIT_FAILURE;
     }
 
@@ -72,6 +78,7 @@ int main(int argc, char **argv)
     logger->write(logger, "program terminating...", LOG_USER, LOG_DEBUG);
     logger->close(logger);
     logger->free(logger);
+    signal_handler->free(signal_handler);
 
     return EXIT_SUCCESS;
 }

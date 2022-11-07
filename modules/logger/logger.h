@@ -16,7 +16,8 @@ typedef struct
     int (*flush)(void *self);
     void (*free)(void *self);
     FILE *file;
-    bool enable_syslog;
+    void (*enable_syslog)(void *self, bool flag);
+    bool syslog_enabled;
 } logger_t;
 
 extern logger_t *logger_new(void);

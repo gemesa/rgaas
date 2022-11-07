@@ -6,9 +6,15 @@
 #include <syslog.h>
 
 #include "../modules/logger/logger.h"
+#include "../modules/signal_handler/signal_handler.h"
 
 int main(void)
 {
+    if (register_signal_handler() == EXIT_FAILURE)
+    {
+        exit(EXIT_FAILURE);
+    }
+
     logger_t *logger = logger_new();
 
     int status = logger->open(logger, NULL, "a+");
@@ -20,6 +26,10 @@ int main(void)
     else
     {
         logger->write(logger, "program started (logger initialization failed, logging to stdout)", LOG_USER, LOG_ERR);
+    }
+
+    while (!signal_flag)
+    {
     }
 
     logger->write(logger, "program terminating...", LOG_USER, LOG_NOTICE);

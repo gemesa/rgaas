@@ -22,3 +22,9 @@ logger:
 
 argparser:
   - modules/argparser/**
+
+signal_handler:
+  - modules/signal_handler/**
+
+test:
+  - test/**

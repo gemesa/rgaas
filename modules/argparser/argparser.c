@@ -49,6 +49,7 @@ static void argparser_initialize(void *s)
 {
     argparser_t *self = s;
     self->parse = &argparser_argparse;
+    self->free = &free;
     self->args.process_mode = FOREGROUND_PROCESS;
     self->args.syslog_enabled = false;
     self->args.log_file = NULL;

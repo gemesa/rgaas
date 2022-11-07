@@ -61,6 +61,8 @@ int main(int argc, char **argv)
         }
     }
 
+    argparser->free(argparser);
+
     while (!signal_flag)
     {
     }

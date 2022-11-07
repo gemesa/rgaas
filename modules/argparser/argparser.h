@@ -23,6 +23,7 @@ typedef struct
 typedef struct
 {
     void (*parse)(void *self, int argc, char **argv);
+    void (*free)(void *self);
     args_t args;
     int status;
     bool non_opt_arg_found;

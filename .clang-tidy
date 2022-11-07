@@ -15,7 +15,8 @@ readability-*,
 -llvmlibc-restrict-system-libc-headers,
 -readability-identifier-length,
 -llvm-header-guard,
--clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling'
+-clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling,
+-clang-analyzer-core.CallAndMessage'
 WarningsAsErrors: '*'
 HeaderFilterRegex: ''
 AnalyzeTemporaryDtors: false

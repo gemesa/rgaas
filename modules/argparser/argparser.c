@@ -4,12 +4,12 @@
 
 #include "argparser.h"
 
-#include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
 
-static char *usage_info = "Usage: rgaas [-h] [-d] [-s] [-l log_file]\n"
+static char *usage_info = "Usage: rgaas [-h] [-v] [-d] [-s] [-l log_file]\n"
                           "  h: print help message\n"
+                          "  v: enable verbose output\n"
                           "  d: daemon mode (default: process is running in foreground)\n"
                           "  s: enable syslog (default: syslog is disabled)\n"
                           "  l: log file (default: process is logging to stdout, IMPORTANT: if -l is provided the destination directory has to exist)\n"
@@ -19,10 +19,13 @@ void argparser_argparse(void *s, int argc, char **argv)
 {
     argparser_t *self = s;
     int c;
-    while ((c = getopt(argc, argv, "dsl:h")) != -1)
+    while ((c = getopt(argc, argv, "vdsl:h")) != -1)
     {
         switch (c)
         {
+            case 'v':
+                self->args.verbose_output = true;
+                break;
             case 'd':
                 self->args.process_mode = DAEMON_PROCESS;
                 break;
@@ -50,6 +53,7 @@ static void argparser_initialize(void *s)
     argparser_t *self = s;
     self->parse = &argparser_argparse;
     self->free = &free;
+    self->args.verbose_output = false;
     self->args.process_mode = FOREGROUND_PROCESS;
     self->args.syslog_enabled = false;
     self->args.log_file = NULL;

@@ -56,7 +56,18 @@ static int logger_write(void *s, char *msg, int facility, int severity)
     {
         syslog(LOG_NOTICE, "%s", msg);
     }
-    int status = fprintf(self->file, "%d rgaas - %s\n", calc_pri(facility, severity), msg);
+    int status = 0;
+    if (self->verbose_output == true)
+    {
+        status = fprintf(self->file, "%d rgaas - %s\n", calc_pri(facility, severity), msg);
+    }
+    else
+    {
+        if (severity < LOG_DEBUG)
+        {
+            status = fprintf(self->file, "%s\n", msg);
+        }
+    }
     self->flush(self);
     return status;
 }
@@ -80,6 +91,12 @@ static void logger_syslog_enable(void *s, bool flag)
     self->syslog_enabled = flag;
 }
 
+static void logger_enable_verbose_output(void *s, bool flag)
+{
+    logger_t *self = s;
+    self->verbose_output = flag;
+}
+
 static void logger_initialize(void *s)
 {
     logger_t *self = s;
@@ -91,6 +108,8 @@ static void logger_initialize(void *s)
     self->file = NULL;
     self->enable_syslog = &logger_syslog_enable;
     self->syslog_enabled = false;
+    self->enable_verbose_output = &logger_enable_verbose_output;
+    self->verbose_output = false;
 }
 
 logger_t *logger_new(void)

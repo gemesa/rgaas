@@ -15,6 +15,7 @@ typedef enum
 
 typedef struct
 {
+    bool verbose_output;
     process_mode_t process_mode;
     bool syslog_enabled;
     char *log_file;

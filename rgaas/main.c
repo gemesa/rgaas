@@ -23,11 +23,12 @@ int main(int argc, char **argv)
 
     logger_t *logger = logger_new();
 
+    logger->enable_verbose_output(logger, argparser->args.verbose_output);
     logger->enable_syslog(logger, argparser->args.syslog_enabled);
 
     if (logger->open(logger, argparser->args.log_file, "a+") == EXIT_SUCCESS)
     {
-        logger->write(logger, "program started", LOG_USER, LOG_NOTICE);
+        logger->write(logger, "program started", LOG_USER, LOG_DEBUG);
     }
     else
     {
@@ -53,7 +54,7 @@ int main(int argc, char **argv)
     {
         if (daemon(0, 0) == EXIT_SUCCESS)
         {
-            logger->write(logger, "switching to daemon mode successful", LOG_USER, LOG_NOTICE);
+            logger->write(logger, "switching to daemon mode successful", LOG_USER, LOG_DEBUG);
         }
         else
         {
@@ -67,7 +68,7 @@ int main(int argc, char **argv)
     {
     }
 
-    logger->write(logger, "program terminating...", LOG_USER, LOG_NOTICE);
+    logger->write(logger, "program terminating...", LOG_USER, LOG_DEBUG);
     logger->close(logger);
     logger->free(logger);
 

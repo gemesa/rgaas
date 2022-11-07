@@ -18,6 +18,8 @@ typedef struct
     FILE *file;
     void (*enable_syslog)(void *self, bool flag);
     bool syslog_enabled;
+    void (*enable_verbose_output)(void *self, bool flag);
+    bool verbose_output;
 } logger_t;
 
 extern logger_t *logger_new(void);

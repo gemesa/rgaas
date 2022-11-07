@@ -17,13 +17,15 @@ int main(int argc, char **argv)
         exit(EXIT_FAILURE);
     }
 
-    args_t args = argparse(argc, argv);
+    argparser_t *argparser = argparser_new();
+
+    argparser->parse(argparser, argc, argv);
 
     logger_t *logger = logger_new();
 
-    logger->enable_syslog(logger, args.syslog_enabled);
+    logger->enable_syslog(logger, argparser->args.syslog_enabled);
 
-    if (logger->open(logger, args.log_file, "a+") == EXIT_SUCCESS)
+    if (logger->open(logger, argparser->args.log_file, "a+") == EXIT_SUCCESS)
     {
         logger->write(logger, "program started", LOG_USER, LOG_NOTICE);
     }
@@ -32,7 +34,22 @@ int main(int argc, char **argv)
         logger->write(logger, "program started (logger initialization failed, logging to stdout)", LOG_USER, LOG_ERR);
     }
 
-    if (args.process_mode == DAEMON_PROCESS)
+    if (argparser->status == EXIT_SUCCESS)
+    {
+        if (argparser->non_opt_arg_found == true)
+        {
+            logger->write(logger, "non-option argument found, please check usage info", LOG_USER, LOG_NOTICE);
+        }
+    }
+    else
+    {
+        logger->write(logger, argparser->usage_info, LOG_USER, LOG_NOTICE);
+        logger->close(logger);
+        logger->free(logger);
+        exit(EXIT_FAILURE);
+    }
+
+    if (argparser->args.process_mode == DAEMON_PROCESS)
     {
         if (daemon(0, 0) == EXIT_SUCCESS)
         {

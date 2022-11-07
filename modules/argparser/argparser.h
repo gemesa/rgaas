@@ -20,6 +20,15 @@ typedef struct
     char *log_file;
 } args_t;
 
-extern args_t argparse(int argc, char **argv);
+typedef struct
+{
+    void (*parse)(void *self, int argc, char **argv);
+    args_t args;
+    int status;
+    bool non_opt_arg_found;
+    char *usage_info;
+} argparser_t;
+
+extern argparser_t *argparser_new(void);
 
 #endif//RGAAS_ARGPARSER_H

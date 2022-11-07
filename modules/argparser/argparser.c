@@ -8,42 +8,58 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-args_t argparse(int argc, char **argv)
-{
-    args_t args = {.process_mode = FOREGROUND_PROCESS, .syslog_enabled = false, .log_file = NULL};
-    char *usage_info = "Usage: %s [-d] [-s] [-l log_file]\n"
-                       "  d: daemon mode (default: process is running in foreground)\n"
-                       "  s: enable syslog (default: syslog is disabled)\n"
-                       "  l: log file (default: process is logging to stdout, IMPORTANT: if -l is provided the destination directory has to exist)\n"
-                       "Note: -s and/or -l should be provided together with -d as stdout and stderr are redirected to /dev/null in daemon mode\n";
+static char *usage_info = "Usage: rgaas [-h] [-d] [-s] [-l log_file]\n"
+                          "  h: print help message\n"
+                          "  d: daemon mode (default: process is running in foreground)\n"
+                          "  s: enable syslog (default: syslog is disabled)\n"
+                          "  l: log file (default: process is logging to stdout, IMPORTANT: if -l is provided the destination directory has to exist)\n"
+                          "Note: -s and/or -l should be provided together with -d as stdout and stderr are redirected to /dev/null in daemon mode\n";
 
+void argparser_argparse(void *s, int argc, char **argv)
+{
+    argparser_t *self = s;
     int c;
     while ((c = getopt(argc, argv, "dsl:h")) != -1)
     {
         switch (c)
         {
             case 'd':
-                args.process_mode = DAEMON_PROCESS;
+                self->args.process_mode = DAEMON_PROCESS;
                 break;
             case 's':
-                args.syslog_enabled = true;
+                self->args.syslog_enabled = true;
                 break;
             case 'l':
-                args.log_file = optarg;
+                self->args.log_file = optarg;
                 break;
             case 'h':
-                (void) fprintf(stdout, usage_info, argv[0]);
-                exit(EXIT_SUCCESS);
+                self->status = EXIT_FAILURE;
             default:
-                (void) fprintf(stderr, usage_info, argv[0]);
-                exit(EXIT_FAILURE);
+                self->status = EXIT_FAILURE;
         }
     }
 
-    for (int index = optind; index < argc; index++)
+    if (optind < argc)
     {
-        printf("Non-option argument %s\n", argv[index]);
+        self->non_opt_arg_found = true;
     }
+}
 
-    return args;
+static void argparser_initialize(void *s)
+{
+    argparser_t *self = s;
+    self->parse = &argparser_argparse;
+    self->args.process_mode = FOREGROUND_PROCESS;
+    self->args.syslog_enabled = false;
+    self->args.log_file = NULL;
+    self->non_opt_arg_found = false;
+    self->status = EXIT_SUCCESS;
+    self->usage_info = usage_info;
+}
+
+argparser_t *argparser_new(void)
+{
+    argparser_t *self = malloc(sizeof(argparser_t));
+    argparser_initialize(self);
+    return self;
 }

@@ -13,3 +13,6 @@ add_executable(rgaas-server
         rgaas/server/main.c modules/logger/logger.c modules/logger/logger.h
         modules/signal_handler/signal_handler.c modules/signal_handler/signal_handler.h
         modules/argparser/argparser.c modules/argparser/argparser.h)
+
+add_executable(rgaas-client
+        rgaas/client/main.c)

@@ -28,7 +28,7 @@ int main(int argc, char **argv)
         logger->write(logger, "program started (logger initialization failed, logging to stdout)", LOG_USER, LOG_ERR);
     }
 
-    signal_handler_t * signal_handler = signal_handler_new();
+    signal_handler_t *signal_handler = signal_handler_new();
 
     if (signal_handler->set(signal_handler) == EXIT_FAILURE)
     {

@@ -57,6 +57,7 @@ static int logger_write(void *s, char *msg, int facility, int severity)
         syslog(LOG_NOTICE, "%s", msg);
     }
     int status = fprintf(self->file, "%d rgaas - %s\n", calc_pri(facility, severity), msg);
+    self->flush(self);
     return status;
 }
 

@@ -4,6 +4,7 @@
 
 #include <stdlib.h>
 #include <syslog.h>
+#include <unistd.h>
 
 #include "../modules/argparser/argparser.h"
 #include "../modules/logger/logger.h"
@@ -29,6 +30,18 @@ int main(int argc, char **argv)
     else
     {
         logger->write(logger, "program started (logger initialization failed, logging to stdout)", LOG_USER, LOG_ERR);
+    }
+
+    if (args.process_mode == DAEMON_PROCESS)
+    {
+        if (daemon(0, 0) == EXIT_SUCCESS)
+        {
+            logger->write(logger, "switching to daemon mode successful", LOG_USER, LOG_NOTICE);
+        }
+        else
+        {
+            logger->write(logger, "switching to daemon mode failed", LOG_USER, LOG_ERR);
+        }
     }
 
     while (!signal_flag)

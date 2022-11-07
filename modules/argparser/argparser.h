@@ -7,8 +7,15 @@
 
 #include <stdbool.h>
 
+typedef enum
+{
+    FOREGROUND_PROCESS,
+    DAEMON_PROCESS
+} process_mode_t;
+
 typedef struct
 {
+    process_mode_t process_mode;
     bool syslog_enabled;
     char *log_file;
 } args_t;

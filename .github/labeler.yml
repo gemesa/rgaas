@@ -14,8 +14,8 @@ documentation:
   - README.md
   - ./*.md
 
-main:
-  - rgaas/**
+main-server:
+  - rgaas/server/**
 
 logger:
   - modules/logger/**

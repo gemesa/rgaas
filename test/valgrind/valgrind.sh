@@ -24,4 +24,7 @@ sleep 3
 echo "valgrind log:"
 cat "$(dirname "$0")/../../build/valgrind.log"
 
+echo "rgaas log:"
+cat "$(dirname "$0")/../../build/rgaas.log"
+
 wait $valgrind_pid

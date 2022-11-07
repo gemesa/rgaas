@@ -15,9 +15,6 @@ int main(void)
         exit(EXIT_FAILURE);
     }
 
-    int x;
-    printf("%d", x);
-
     logger_t *logger = logger_new();
 
     int status = logger->open(logger, NULL, "a+");

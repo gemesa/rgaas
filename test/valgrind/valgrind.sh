@@ -18,6 +18,9 @@ sleep 15
 kill -INT $valgrind_pid
 echo "SIGINT sent to valgrind_pid ($valgrind_pid)"
 
+echo "waiting for valgrind to finish writing the log file..."
+sleep 3
+
 echo "valgrind log:"
 cat "$(dirname "$0")/../../build/valgrind.log"
 

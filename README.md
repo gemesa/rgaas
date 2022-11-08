@@ -1,7 +1,5 @@
 # rgaas
 
----
-
 `rgaas-server` is a service that generates random bytes (using rand() which is not a cryptographically secure generator). The length of the random byte sequence can be specified by the client. The server can handle multiple
 random number requests per connection. The server serves the clients via TCP/IP, can handle multiple connections and can be run as a daemon.
 
@@ -26,14 +24,14 @@ $ cmake .
 $ cmake --build .
 ```
 
-which will build `rgaas-server` and `rgaas-client` executables. You can find them in the build folder.
+which will build `rgaas-server` and `rgaas-client` executables. You can find them in the _build_ folder.
 
 ## Quickstart
 
 :warning: WIP
 
 ```bash
-$ ./build/rgaas-server
+$ ./build/rgaas-server -d
 $ ./build/rgaas-client
 ```
 

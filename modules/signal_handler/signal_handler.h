@@ -9,9 +9,11 @@
 
 typedef struct
 {
-    int (*set)(void *self);
+    void (*set)(void *self);
     void (*handle)(int signal);
     void (*free)(void *self);
+    struct sigaction action;
+
 } signal_handler_t;
 
 extern signal_handler_t *signal_handler_new(void);

@@ -30,15 +30,7 @@ int main(int argc, char **argv)
 
     signal_handler_t *signal_handler = signal_handler_new();
 
-    if (signal_handler->set(signal_handler) == EXIT_FAILURE)
-    {
-        logger->write(logger, LOG_USER, LOG_ERR, "setting signal handler failed, program terminating...");
-        logger->close(logger);
-        logger->free(logger);
-        argparser->free(argparser);
-        signal_handler->free(signal_handler);
-        return EXIT_FAILURE;
-    }
+    signal_handler->set(signal_handler);
 
     if (argparser->status == EXIT_SUCCESS)
     {
@@ -73,6 +65,10 @@ int main(int argc, char **argv)
     }
 
     argparser->free(argparser);
+
+    while (signal_flag == 0)
+    {
+    }
 
     logger->write(logger, LOG_USER, LOG_DEBUG, "program terminating...\n");
     logger->close(logger);

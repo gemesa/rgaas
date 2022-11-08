@@ -37,14 +37,15 @@ $ ./build/rgaas-client
 
 ## For developers
 
-The following tools are necessary to format and check your code before `git push`:
+The following tools are necessary to format, check and test your code before `git push`:
 
 - `clang-format` (14.0.5)
 - `clang-tidy` (14.0.5)
+- `valgrind` (3.19.0)
 
-### How to format and check your code
+### How to format, check and test your code
 
-Invoke the following commands:
+Invoke the following commands to format your code and run static code analysis:
 
 ```bash
 $ clang-format myfile.c
@@ -64,3 +65,19 @@ $ clang-tidy --warnings-as-errors=* -checks=-*,cert-*,clang-analyzer-*,llvm-*,mi
 ```
 
 and is being constantly tailored during the development.
+
+Invoke the following command to run dynamic analysis:
+
+```bash
+$ chmod +x ./test/valgrind/valgrind.sh
+$ ./test/valgrind/valgrind.sh
+```
+
+which will generate the following files in the _build_ folder:
+
+- _valgrind-server.log_
+- _valgrind-client.log_
+- _rgaas-server.log_
+- _rgaas-client.log_
+
+and also print analysis information to stdout.

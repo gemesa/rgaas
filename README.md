@@ -1,9 +1,9 @@
 # rgaas
 
 `rgaas-server` is a service that generates random bytes (using rand() which is not a cryptographically secure generator). The length of the random byte sequence can be specified by the client. The server can handle multiple
-random number requests per connection. The server serves the clients via TCP/IP, can handle multiple connections and can be run as a daemon.
+random number requests per connection, can handle multiple connections, serves the clients via TCP/IP and can be run as a daemon.
 
-`rgaas-client` is a client to test rgaas-server (connect, request and display multiple random byte
+`rgaas-client` is a client to test `rgaas-server` (connect, request and display multiple random byte
 sequences of a user-specified length).
 
 ## Installation from source

@@ -13,10 +13,10 @@ jobs:
         run: cmake .
 
       - name: Clang-Format
-        run: find ./rgaas/ ./modules/ -name *.h -o -name *.c | xargs clang-format --dry-run -Werror
+        run: find ./rgaas/ ./modules/ -name *.h -o -name *.c | xargs clang-format-14 --dry-run -Werror
 
       - name: Clang-Tidy
-        run: find ./rgaas/ ./modules/ -name *.h -o -name *.c | xargs clang-tidy
+        run: find ./rgaas/ ./modules/ -name *.h -o -name *.c | xargs clang-tidy-14
 
       - name: CMake build
         run: cmake --build .

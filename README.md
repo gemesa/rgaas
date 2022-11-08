@@ -50,7 +50,7 @@ Invoke the following commands:
 $ clang-format myfile.c
 $ clang-tidy myfile.c
 ```
-or you can recursively format and check all .c, .h files in your folder:
+or you can recursively format and check all _.c_, _.h_ files in your folder:
 
 ```bash
 $ find ./myfolder/ -name *.h -o -name *.c | xargs clang-format

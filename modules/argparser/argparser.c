@@ -7,6 +7,12 @@
 #include <stdlib.h>
 #include <unistd.h>
 
+enum
+{
+    CONVERSION_BASE = 10,
+    DEFAULT_PORT_NUMBER = 8000
+};
+
 static char *usage_info = "Usage: rgaas-server -p port_number [-h] [-v] [-d] [-s] [-l log_file]\n"
                           "  p: port number\n"
                           "  h: print help message\n"
@@ -26,7 +32,7 @@ void argparser_argparse(void *s, int argc, char **argv)
         switch (c)
         {
             case 'p':
-                self->args.port_number = strtoul(optarg, &ptr, 10);
+                self->args.port_number = strtoul(optarg, &ptr, CONVERSION_BASE);
             case 'v':
                 self->args.verbose_output = true;
                 break;
@@ -61,7 +67,7 @@ static void argparser_initialize(void *s)
     argparser_t *self = s;
     self->parse = &argparser_argparse;
     self->free = &free;
-    self->args.port_number = 8000;
+    self->args.port_number = DEFAULT_PORT_NUMBER;
     self->args.verbose_output = false;
     self->args.process_mode = FOREGROUND_PROCESS;
     self->args.syslog_enabled = false;

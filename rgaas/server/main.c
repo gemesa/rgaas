@@ -44,7 +44,10 @@ int main(int argc, char **argv)
     {
         if (argparser->non_opt_arg_found == true)
         {
-            logger->write(logger, LOG_USER, LOG_NOTICE, "non-option argument found, please check usage info\n");
+            for (int i = argparser->args.optind; i < argc; i++)
+            {
+                logger->write(logger, LOG_USER, LOG_NOTICE, "non-option argument found: %s\n", argparser->args.argv[argparser->args.optind]);
+            }
         }
     }
     else

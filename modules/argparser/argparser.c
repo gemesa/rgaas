@@ -7,7 +7,8 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-static char *usage_info = "Usage: rgaas [-h] [-v] [-d] [-s] [-l log_file]\n"
+static char *usage_info = "Usage: rgaas-server -p port_number [-h] [-v] [-d] [-s] [-l log_file]\n"
+                          "  p: port number\n"
                           "  h: print help message\n"
                           "  v: enable verbose output\n"
                           "  d: daemon mode (default: process is running in foreground)\n"
@@ -19,10 +20,13 @@ void argparser_argparse(void *s, int argc, char **argv)
 {
     argparser_t *self = s;
     int c;
-    while ((c = getopt(argc, argv, "vdsl:h")) != -1)
+    char *ptr;
+    while ((c = getopt(argc, argv, "p:vdsl:h")) != -1)
     {
         switch (c)
         {
+            case 'p':
+                self->args.port_number = strtoul(optarg, &ptr, 10);
             case 'v':
                 self->args.verbose_output = true;
                 break;
@@ -46,6 +50,10 @@ void argparser_argparse(void *s, int argc, char **argv)
     {
         self->non_opt_arg_found = true;
     }
+
+    self->args.optind = optind;
+    self->args.argc = argc;
+    self->args.argv = argv;
 }
 
 static void argparser_initialize(void *s)
@@ -53,6 +61,7 @@ static void argparser_initialize(void *s)
     argparser_t *self = s;
     self->parse = &argparser_argparse;
     self->free = &free;
+    self->args.port_number = 8000;
     self->args.verbose_output = false;
     self->args.process_mode = FOREGROUND_PROCESS;
     self->args.syslog_enabled = false;

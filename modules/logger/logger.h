@@ -12,7 +12,7 @@ typedef struct
 {
     int (*open)(void *self, char *filename, char *modes);
     int (*close)(void *self);
-    int (*write)(void *s, int facility, int severity, const char *format, ... );
+    int (*write)(void *s, int facility, int severity, const char *format, ...);
     int (*flush)(void *self);
     void (*free)(void *self);
     FILE *file;

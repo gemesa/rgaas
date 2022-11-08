@@ -21,18 +21,18 @@ int main(int argc, char **argv)
 
     if (logger->open(logger, argparser->args.log_file, "a+") == EXIT_SUCCESS)
     {
-        logger->write(logger, "program started", LOG_USER, LOG_DEBUG);
+        logger->write(logger, LOG_USER, LOG_DEBUG, "program started\n");
     }
     else
     {
-        logger->write(logger, "program started (logger initialization failed, logging to stdout)", LOG_USER, LOG_ERR);
+        logger->write(logger, LOG_USER, LOG_ERR, "program started (logger initialization failed, logging to stdout)\n");
     }
 
     signal_handler_t *signal_handler = signal_handler_new();
 
     if (signal_handler->set(signal_handler) == EXIT_FAILURE)
     {
-        logger->write(logger, "setting signal handler failed, program terminating...", LOG_USER, LOG_ERR);
+        logger->write(logger, LOG_USER, LOG_ERR, "setting signal handler failed, program terminating...");
         logger->close(logger);
         logger->free(logger);
         argparser->free(argparser);
@@ -44,12 +44,12 @@ int main(int argc, char **argv)
     {
         if (argparser->non_opt_arg_found == true)
         {
-            logger->write(logger, "non-option argument found, please check usage info", LOG_USER, LOG_NOTICE);
+            logger->write(logger, LOG_USER, LOG_NOTICE, "non-option argument found, please check usage info\n");
         }
     }
     else
     {
-        logger->write(logger, argparser->usage_info, LOG_USER, LOG_NOTICE);
+        logger->write(logger, LOG_USER, LOG_NOTICE, argparser->usage_info);
         logger->close(logger);
         logger->free(logger);
         argparser->free(argparser);
@@ -61,21 +61,17 @@ int main(int argc, char **argv)
     {
         if (daemon(0, 0) == EXIT_SUCCESS)
         {
-            logger->write(logger, "switching to daemon mode successful", LOG_USER, LOG_DEBUG);
+            logger->write(logger, LOG_USER, LOG_DEBUG, "switching to daemon mode successful\n");
         }
         else
         {
-            logger->write(logger, "switching to daemon mode failed", LOG_USER, LOG_ERR);
+            logger->write(logger, LOG_USER, LOG_ERR, "switching to daemon mode failed\n");
         }
     }
 
     argparser->free(argparser);
 
-    while (!signal_flag)
-    {
-    }
-
-    logger->write(logger, "program terminating...", LOG_USER, LOG_DEBUG);
+    logger->write(logger, LOG_USER, LOG_DEBUG, "program terminating...\n");
     logger->close(logger);
     logger->free(logger);
     signal_handler->free(signal_handler);

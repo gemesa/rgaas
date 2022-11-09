@@ -38,7 +38,7 @@ int main(int argc, char **argv)
         {
             for (int i = argparser->args.optind; i < argc; i++)
             {
-                logger->write(logger, LOG_USER, LOG_NOTICE, "non-option argument found: %s\n", argparser->args.argv[argparser->args.optind]);
+                logger->write(logger, LOG_USER, LOG_NOTICE, "non-option argument found: %s\n", argparser->args.argv[i]);
             }
         }
     }

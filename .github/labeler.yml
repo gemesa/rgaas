@@ -17,6 +17,9 @@ documentation:
 main-server:
   - rgaas/server/**
 
+main-client:
+  - rgaas/client/**
+
 logger:
   - modules/logger/**
 

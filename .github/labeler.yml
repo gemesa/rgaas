@@ -26,5 +26,8 @@ argparser:
 signal_handler:
   - modules/signal_handler/**
 
+tcp_handler:
+  - modules/tcp_handler/**
+
 test:
   - test/**

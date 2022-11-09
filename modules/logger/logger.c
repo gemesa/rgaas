@@ -49,26 +49,43 @@ static int logger_close(void *s)
     return status;
 }
 
-static int logger_write(void *s, char *msg, int facility, int severity)
+static int logger_write(void *s, int facility, int severity, const char *format, ...)
 {
     logger_t *self = s;
+
+    va_list args;
+    va_start(args, format);
+
     if (self->syslog_enabled == true)
     {
-        syslog(LOG_NOTICE, "%s", msg);
+        vsyslog(LOG_NOTICE, format, args);
     }
-    int status = 0;
+    int status = EXIT_SUCCESS;
     if (self->verbose_output == true)
     {
-        status = fprintf(self->file, "%d rgaas - %s\n", calc_pri(facility, severity), msg);
+        if (fprintf(self->file, "%d rgaas - ", calc_pri(facility, severity)) < 0)
+        {
+            status = EXIT_FAILURE;
+        }
+        if (vfprintf(self->file, format, args) < 0)
+        {
+            status = EXIT_FAILURE;
+        }
     }
     else
     {
         if (severity < LOG_DEBUG)
         {
-            status = fprintf(self->file, "%s\n", msg);
+            if (vfprintf(self->file, format, args) < 0)
+            {
+                status = EXIT_FAILURE;
+            }
         }
     }
     self->flush(self);
+
+    va_end(args);
+
     return status;
 }
 

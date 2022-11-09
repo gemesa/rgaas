@@ -15,6 +15,12 @@ typedef enum
 
 typedef struct
 {
+    int argc;
+    char **argv;
+    int optind;
+    bool test_mode;
+    char *hostname;
+    unsigned int port_number;
     bool verbose_output;
     process_mode_t process_mode;
     bool syslog_enabled;

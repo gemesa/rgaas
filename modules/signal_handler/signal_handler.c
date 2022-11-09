@@ -3,6 +3,7 @@
 //
 
 #include <signal.h>
+#include <stdio.h>
 #include <stdlib.h>
 
 #include "signal_handler.h"
@@ -15,14 +16,11 @@ static void signal_handler_handle(int signal)
     signal_flag = 1;
 }
 
-static int signal_handler_set(void *s)
+static void signal_handler_set(void *s)
 {
     signal_handler_t *self = s;
-    if (signal(SIGINT, self->handle) == SIG_ERR)
-    {
-        return EXIT_FAILURE;
-    }
-    return EXIT_SUCCESS;
+    sigemptyset(&self->action.sa_mask);
+    sigaction(SIGINT, &self->action, NULL);
 }
 
 static void signal_handler_free(void *s)
@@ -37,6 +35,8 @@ static void signal_handler_initialize(void *s)
     self->set = &signal_handler_set;
     self->handle = &signal_handler_handle;
     self->free = &signal_handler_free;
+    self->action.sa_handler = self->handle;
+    self->action.sa_flags = 0;
     signal_flag = 0;
 }
 

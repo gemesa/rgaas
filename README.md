@@ -28,8 +28,27 @@ which will build `rgaas-server` and `rgaas-client` executables. You can find the
 
 ## Quickstart
 
+Invoke the following commands (daemon mode):
+
+```bash
+$ ./build/rgaas-server -p 8000 -v -d
+$ ./build/rgaas-client -n <hostname> -p 8000 -v
+```
+
+Note: you will need to send SIGINT to the process of `rgaas-server` to kill it:
+
+```bash
+$ kill -INT $(pidof ./build/rgaas-server)
+```
+
+Invoke the following commands (foreground mode):
+
 ```bash
 $ ./build/rgaas-server -p 8000 -v
+```
+Open an other terminal:
+
+```bash
 $ ./build/rgaas-client -n <hostname> -p 8000 -v
 ```
 

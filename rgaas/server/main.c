@@ -2,13 +2,16 @@
 // Created by gemesa on 11/2/22.
 //
 
+#include <errno.h>
 #include <stdlib.h>
+#include <string.h>
 #include <syslog.h>
 #include <unistd.h>
 
 #include "../../modules/argparser/argparser.h"
 #include "../../modules/logger/logger.h"
 #include "../../modules/signal_handler/signal_handler.h"
+#include "../../modules/tcp/tcp_handler.h"
 
 int main(int argc, char **argv)
 {
@@ -64,16 +67,57 @@ int main(int argc, char **argv)
         }
     }
 
-    argparser->free(argparser);
+    tcp_handler_t *tcp_handler = tcp_handler_new();
 
-    while (signal_flag == 0)
+    tcp_handler->setup(tcp_handler, argparser->args.port_number);
+    switch (tcp_handler->status)
     {
+        case EXIT_SOCKET_ERROR:
+            logger->write(logger, LOG_USER, LOG_ERR, "%s %s\n", "opening socket failed:", strerror(errno));
+            break;
+        case EXIT_BIND_ERROR:
+            logger->write(logger, LOG_USER, LOG_ERR, "%s %s\n", "binding failed:", strerror(errno));
+            break;
+        case EXIT_LISTEN_ERROR:
+            logger->write(logger, LOG_USER, LOG_ERR, "%s %s\n", "listening failed:", strerror(errno));
+            break;
+        default:
+            logger->write(logger, LOG_USER, LOG_DEBUG, "tcp setup successful\n");
+            break;
+    }
+
+    tcp_handler->loop(tcp_handler);
+    switch (tcp_handler->status)
+    {
+        case EXIT_CLOSE_FD_ERROR:
+            logger->write(logger, LOG_USER, LOG_ERR, "%s %s\n", "closing socket_fd failed:", strerror(errno));
+            break;
+        case EXIT_CLOSE_FD_NEW_ERROR:
+            logger->write(logger, LOG_USER, LOG_ERR, "%s %s\n", "closing socket_fd_new failed:", strerror(errno));
+            break;
+        case EXIT_ACCEPT_ERROR:
+            logger->write(logger, LOG_USER, LOG_ERR, "%s %s\n", "accept failed:", strerror(errno));
+            break;
+        case EXIT_FORK_ERROR:
+            logger->write(logger, LOG_USER, LOG_ERR, "%s %s\n", "fork failed:", strerror(errno));
+            break;
+        case EXIT_READ_ERROR:
+            logger->write(logger, LOG_USER, LOG_ERR, "%s %s\n", "reading from socket failed:", strerror(errno));
+            break;
+        case EXIT_WRITE_ERROR:
+            logger->write(logger, LOG_USER, LOG_ERR, "%s %s\n", "writing to socket failed:", strerror(errno));
+            break;
+        default:
+            logger->write(logger, LOG_USER, LOG_DEBUG, "tcp loop successful\n");
+            break;
     }
 
     logger->write(logger, LOG_USER, LOG_DEBUG, "program terminating...\n");
     logger->close(logger);
     logger->free(logger);
+    argparser->free(argparser);
     signal_handler->free(signal_handler);
+    tcp_handler->free(tcp_handler);
 
     return EXIT_SUCCESS;
 }

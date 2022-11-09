@@ -20,7 +20,7 @@ valgrind --leak-check=full \
   --verbose \
   --error-exitcode=1 \
   --log-file="$(dirname "$0")/../../build/valgrind-client.log" \
-  "$(dirname "$0")/../../build/rgaas-client" >"$(dirname "$0")/../../build/rgaas-client.log" &
+  "$(dirname "$0")/../../build/rgaas-client" -t >"$(dirname "$0")/../../build/rgaas-client.log" &
 
 valgrind_client_pid=$!
 

@@ -11,7 +11,7 @@
 #include "../../modules/argparser/argparser.h"
 #include "../../modules/logger/logger.h"
 #include "../../modules/signal_handler/signal_handler.h"
-#include "../../modules/tcp/tcp_handler.h"
+#include "../../modules/tcp_handler/tcp_handler.h"
 
 // NOLINTNEXTLINE(readability-function-cognitive-complexity)
 int main(int argc, char **argv)

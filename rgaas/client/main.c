@@ -139,5 +139,10 @@ int main(int argc, char **argv)
     }
 
     close(socket_fd);
+
+    logger->close(logger);
+    logger->free(logger);
+    argparser->free(argparser);
+    signal_handler->free(signal_handler);
     return EXIT_SUCCESS;
 }

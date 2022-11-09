@@ -28,11 +28,9 @@ which will build `rgaas-server` and `rgaas-client` executables. You can find the
 
 ## Quickstart
 
-:warning: WIP
-
 ```bash
-$ ./build/rgaas-server -d
-$ ./build/rgaas-client
+$ ./build/rgaas-server -p 8000 -v
+$ ./build/rgaas-client -n <hostname> -p 8000 -v
 ```
 
 ## For developers

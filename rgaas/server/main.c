@@ -68,10 +68,10 @@ int main(int argc, char **argv)
         }
     }
 
-    tcp_handler_t *tcp_handler = tcp_handler_new();
+    tcp_handler_server_t *tcp_handler = tcp_handler_server_new();
 
-    tcp_handler->setup(tcp_handler, argparser->args.generic.port_number);
-    switch (tcp_handler->status)
+    tcp_handler->server.setup(tcp_handler, argparser->args.generic.port_number);
+    switch (tcp_handler->generic.status)
     {
         case EXIT_SOCKET_ERROR:
             logger->write(logger, LOG_USER, LOG_ERR, "%s %s\n", "opening socket failed:", strerror(errno));
@@ -87,8 +87,8 @@ int main(int argc, char **argv)
             break;
     }
 
-    tcp_handler->loop(tcp_handler);
-    switch (tcp_handler->status)
+    tcp_handler->server.loop(tcp_handler);
+    switch (tcp_handler->generic.status)
     {
         case EXIT_CLOSE_FD_ERROR:
             logger->write(logger, LOG_USER, LOG_ERR, "%s %s\n", "closing socket_fd failed:", strerror(errno));
@@ -118,7 +118,7 @@ int main(int argc, char **argv)
     logger->free(logger);
     argparser->generic.free(argparser);
     signal_handler->free(signal_handler);
-    tcp_handler->free(tcp_handler);
+    tcp_handler->generic.free(tcp_handler);
 
     return EXIT_SUCCESS;
 }

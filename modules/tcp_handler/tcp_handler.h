@@ -5,6 +5,7 @@
 #ifndef RGAAS_TCP_HANDLER_H
 #define RGAAS_TCP_HANDLER_H
 
+#include <netdb.h>
 #include <netinet/in.h>
 #include <sys/socket.h>
 #include <unistd.h>
@@ -30,29 +31,49 @@ enum
 typedef struct
 {
     void (*socket)(void *self);
-    int (*bind)(void *self, int port_number);
-    int (*connect)(int fd, const struct sockaddr *addr, socklen_t len);
-    void (*accept)(void *self);
-    int (*listen)(void *self);
-    int (*close)(void *self, int fd);
-    void (*fork)(void *self);
+    void (*bind)(void *self, int port_number);
+    void (*close)(void *self, int fd);
     void (*read)(void *self);
     void (*write)(void *self);
     void (*free)(void *self);
-    void (*setup)(void *self, unsigned int port_number);
-    void (*loop)(void *self);
     int status;
     int socket_fd;
-    int socket_fd_new;
-    socklen_t client_length;
-    int queue_length;
-    int pid;
     ssize_t number_of_bytes;
     struct sockaddr_in server_address;
-    struct sockaddr_in client_address;
     char message_buffer[MESSAGE_BUFFER_SIZE];
-} tcp_handler_t;
+} tcp_handler_generic_t;
 
-extern tcp_handler_t *tcp_handler_new(void);
+typedef struct
+{
+    tcp_handler_generic_t generic;
+    struct
+    {
+        void (*connect)(void *self);
+        void (*gethostbyname)(void *self, const char *name);
+        struct hostent *server;
+        void (*update_server)(void *self, uint16_t hostshort);
+    } client;
+} tcp_handler_client_t;
+
+typedef struct
+{
+    tcp_handler_generic_t generic;
+    struct
+    {
+        void (*listen)(void *self);
+        void (*accept)(void *self);
+        void (*fork)(void *self);
+        void (*setup)(void *self, unsigned int port_number);
+        void (*loop)(void *self);
+        int socket_fd_new;
+        socklen_t client_length;
+        int queue_length;
+        int pid;
+        struct sockaddr_in client_address;
+    } server;
+} tcp_handler_server_t;
+
+extern tcp_handler_server_t *tcp_handler_server_new(void);
+extern tcp_handler_client_t *tcp_handler_client_new(void);
 
 #endif//RGAAS_TCP_HANDLER_H

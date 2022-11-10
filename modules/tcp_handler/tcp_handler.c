@@ -143,25 +143,25 @@ static void tcp_handler_setup(void *s, unsigned int port_number)
     self->generic.status = EXIT_SUCCESS;
 }
 
-static void tcp_handler_gethostbyname(void *s, const char* name)
+static void tcp_handler_gethostbyname(void *s, const char *name)
 {
-    tcp_handler_client_t * self = s;
+    tcp_handler_client_t *self = s;
     self->client.server = gethostbyname(name);
 }
 
-static void tcp_handler_update_server_address(void*s, uint16_t hostshort)
+static void tcp_handler_update_server_address(void *s, uint16_t hostshort)
 {
-    tcp_handler_client_t * self = s;
+    tcp_handler_client_t *self = s;
     memcpy((char *) &self->generic.server_address.sin_addr.s_addr,
            (char *) self->client.server->h_addr,
            self->client.server->h_length);
     self->generic.server_address.sin_port = htons(hostshort);
 }
 
-static int tcp_handler_connect(void * s)
+static int tcp_handler_connect(void *s)
 {
-    tcp_handler_client_t * self = s;
-    int status =  connect(self->generic.socket_fd, (struct sockaddr *) &self->generic.server_address, sizeof(self->generic.server_address));
+    tcp_handler_client_t *self = s;
+    int status = connect(self->generic.socket_fd, (struct sockaddr *) &self->generic.server_address, sizeof(self->generic.server_address));
     return status;
 }
 

@@ -48,10 +48,10 @@ typedef struct
     tcp_handler_generic_t generic;
     struct
     {
-        int (*connect)(void * self);
+        int (*connect)(void *self);
         void (*gethostbyname)(void *self, const char *name);
         struct hostent *server;
-        void (*update_server)(void*self, uint16_t hostshort);
+        void (*update_server)(void *self, uint16_t hostshort);
     } client;
 } tcp_handler_client_t;
 

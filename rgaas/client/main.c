@@ -52,7 +52,7 @@ int main(int argc, char **argv)
         return EXIT_FAILURE;
     }
 
-    tcp_handler_client_t * tcp_handler = tcp_handler_client_new();
+    tcp_handler_client_t *tcp_handler = tcp_handler_client_new();
 
     tcp_handler->generic.socket(tcp_handler);
 

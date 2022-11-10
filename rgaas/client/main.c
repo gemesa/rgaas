@@ -16,7 +16,7 @@
 // NOLINTNEXTLINE(readability-function-cognitive-complexity)
 int main(int argc, char **argv)
 {
-    argparser_client_t  *argparser = argparser_client_new();
+    argparser_client_t *argparser = argparser_client_new();
     logger_t *logger = logger_new();
 
     argparser->generic.parse(argparser, argc, argv);

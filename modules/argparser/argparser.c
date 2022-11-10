@@ -155,7 +155,6 @@ static void argparser_server_initialize(void *s)
     self->args.server.process_mode = FOREGROUND_PROCESS;
     self->args.server.syslog_enabled = false;
     self->args.server.log_file = NULL;
-
 }
 
 argparser_client_t *argparser_client_new(void)

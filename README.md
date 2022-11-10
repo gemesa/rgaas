@@ -98,3 +98,9 @@ which will generate the following files in the _build_ folder:
 - _rgaas-client.log_
 
 and also print analysis information to stdout.
+
+Invoke `./build/unit-test` to run the unit tests:
+
+```bash
+$ ./build/unit-test
+```

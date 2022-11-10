@@ -94,7 +94,8 @@ static void tcp_handler_write(void *s)
     if ((number > 0) && (number <= MESSAGE_BUFFER_SIZE))
     {
         unsigned char *bytes = get_rand_bytestream(number);
-        // NOLINTNEXTLINE
+
+        /* NOLINTNEXTLINE(clang-analyzer-unix.Malloc) */
         self->number_of_bytes = write(self->socket_fd_new, bytes, number);
     }
     else
@@ -129,7 +130,7 @@ static void tcp_handler_setup(void *s, unsigned int port_number)
     self->status = EXIT_SUCCESS;
 }
 
-// NOLINTNEXTLINE(readability-function-cognitive-complexity)
+/* NOLINTNEXTLINE(readability-function-cognitive-complexity) */
 void tcp_handler_loop(void *s)
 {
     tcp_handler_t *self = s;

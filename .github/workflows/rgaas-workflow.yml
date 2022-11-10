@@ -21,17 +21,14 @@ jobs:
       - name: CMake build
         run: cmake --build .
 
+      - name: Run unit tests
+        run: ./build/unit-test
+
       - name: Valgrind (install)
         run: sudo apt-get install valgrind -y
 
       - name: Valgrind (run)
         run: chmod +x ./test/valgrind/valgrind.sh && ./test/valgrind/valgrind.sh
-
-      - name: Build unit tests (skipped)
-        run: exit 0
-
-      - name: Run unit tests (skipped)
-        run: exit 0
 
       - name: Archive artifacts
         uses: actions/upload-artifact@v3

@@ -131,7 +131,7 @@ int main(int argc, char **argv)
     }
 
     tcp_handler->generic.close(tcp_handler, tcp_handler->generic.socket_fd);
-
+    tcp_handler->generic.free(tcp_handler);
     logger->close(logger);
     logger->free(logger);
     argparser->generic.free(argparser);

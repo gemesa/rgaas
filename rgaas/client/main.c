@@ -16,11 +16,11 @@
 // NOLINTNEXTLINE(readability-function-cognitive-complexity)
 int main(int argc, char **argv)
 {
-    argparser_t *argparser = argparser_new();
+    argparser_client_t *argparser = argparser_client_new();
     logger_t *logger = logger_new();
 
-    argparser->parse(argparser, argc, argv);
-    logger->enable_verbose_output(logger, argparser->args.verbose_output);
+    argparser->generic.parse(argparser, argc, argv);
+    logger->enable_verbose_output(logger, argparser->args.generic.verbose_output);
 
     if (logger->open(logger, NULL, "a+") == EXIT_SUCCESS)
     {
@@ -35,22 +35,23 @@ int main(int argc, char **argv)
 
     signal_handler->set(signal_handler);
 
-    if (argparser->status == EXIT_SUCCESS)
+    if (argparser->generic.status == EXIT_SUCCESS)
     {
-        if (argparser->non_opt_arg_found == true)
+        if (argparser->generic.non_opt_arg_found == true)
         {
-            for (int i = argparser->args.optind; i < argc; i++)
+            for (int i = argparser->args.generic.optind; i < argc; i++)
             {
-                logger->write(logger, LOG_USER, LOG_NOTICE, "non-option argument found: %s\n", argparser->args.argv[i]);
+                logger->write(logger, LOG_USER, LOG_NOTICE, "non-option argument found: %s\n", argparser->args.generic.argv[i]);
             }
         }
     }
     else
     {
-        logger->write(logger, LOG_USER, LOG_NOTICE, argparser->usage_info);
+        logger->write(logger, LOG_USER, LOG_NOTICE, argparser->generic.usage_info);
+        logger->write(logger, LOG_USER, LOG_NOTICE, argparser->generic.usage_info_generic);
         logger->close(logger);
         logger->free(logger);
-        argparser->free(argparser);
+        argparser->generic.free(argparser);
         signal_handler->free(signal_handler);
         return EXIT_FAILURE;
     }
@@ -59,18 +60,18 @@ int main(int argc, char **argv)
     if (socket_fd == -1)
     {
         logger->write(logger, LOG_USER, LOG_ERR, "%s %s\n", "opening socket failed:", strerror(errno));
-        argparser->free(argparser);
+        argparser->generic.free(argparser);
         logger->close(logger);
         logger->free(logger);
         signal_handler->free(signal_handler);
         return EXIT_FAILURE;
     }
 
-    struct hostent *server = gethostbyname(argparser->args.hostname);
+    struct hostent *server = gethostbyname(argparser->args.client.hostname);
     if (server == NULL)
     {
         logger->write(logger, LOG_USER, LOG_ERR, "no such host\n");
-        argparser->free(argparser);
+        argparser->generic.free(argparser);
         logger->close(logger);
         logger->free(logger);
         signal_handler->free(signal_handler);
@@ -83,7 +84,7 @@ int main(int argc, char **argv)
     memcpy((char *) &server_address.sin_addr.s_addr,
            (char *) server->h_addr,
            server->h_length);
-    server_address.sin_port = htons(argparser->args.port_number);
+    server_address.sin_port = htons(argparser->args.generic.port_number);
 
     if (connect(socket_fd, (struct sockaddr *) &server_address, sizeof(server_address)) == -1)
     {
@@ -97,7 +98,7 @@ int main(int argc, char **argv)
     {
         logger->write(logger, LOG_USER, LOG_NOTICE, "please enter the number of random bytes to be requested: \n");
         memset(message_buffer, 0, MESSAGE_BUFFER_SIZE);
-        if (argparser->args.test_mode == true)
+        if (argparser->args.client.test_mode == true)
         {
             memcpy(message_buffer, "5", sizeof("5"));
         }
@@ -132,7 +133,7 @@ int main(int argc, char **argv)
             logger->write(logger, LOG_USER, LOG_NOTICE, "received from server:\n%s\n", message_buffer);
         }
 
-        if (argparser->args.test_mode == true)
+        if (argparser->args.client.test_mode == true)
         {
             break;
         }
@@ -142,7 +143,7 @@ int main(int argc, char **argv)
 
     logger->close(logger);
     logger->free(logger);
-    argparser->free(argparser);
+    argparser->generic.free(argparser);
     signal_handler->free(signal_handler);
     return EXIT_SUCCESS;
 }

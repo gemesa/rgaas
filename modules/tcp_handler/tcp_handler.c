@@ -38,27 +38,24 @@ static void tcp_handler_socket(void *s)
     self->socket_fd = socket(AF_INET, SOCK_STREAM, 0);
 }
 
-static int tcp_handler_bind(void *s, int port_number)
+static void tcp_handler_bind(void *s, int port_number)
 {
     tcp_handler_generic_t *self = s;
     self->server_address.sin_port = htons(port_number);
-    int status = bind(self->socket_fd, (struct sockaddr *) &self->server_address, sizeof(self->server_address));
-    return status;
+    self->status = bind(self->socket_fd, (struct sockaddr *) &self->server_address, sizeof(self->server_address));
 }
 
-static int tcp_handler_listen(void *s)
+static void tcp_handler_listen(void *s)
 {
     tcp_handler_server_t *self = s;
-    int status = listen(self->generic.socket_fd, self->server.queue_length);
-    return status;
+    self->generic.status = listen(self->generic.socket_fd, self->server.queue_length);
 }
 
-static int tcp_handler_close(void *s, int fd)
+static void tcp_handler_close(void *s, int fd)
 {
     tcp_handler_generic_t *self = s;
     (void) self;
-    int status = close(fd);
-    return status;
+    self->status = close(fd);
 }
 
 static void tcp_handler_free(void *s)
@@ -128,13 +125,15 @@ static void tcp_handler_setup(void *s, unsigned int port_number)
         return;
     }
 
-    if (self->generic.bind(self, port_number) == -1)
+    self->generic.bind(self, port_number);
+    if (self->generic.status == -1)
     {
         self->generic.status = EXIT_BIND_ERROR;
         return;
     }
 
-    if (self->server.listen(self) == -1)
+    self->server.listen(self);
+    if (self->generic.status == -1)
     {
         self->generic.status = EXIT_LISTEN_ERROR;
         return;
@@ -158,11 +157,10 @@ static void tcp_handler_update_server_address(void *s, uint16_t hostshort)
     self->generic.server_address.sin_port = htons(hostshort);
 }
 
-static int tcp_handler_connect(void *s)
+static void tcp_handler_connect(void *s)
 {
     tcp_handler_client_t *self = s;
-    int status = connect(self->generic.socket_fd, (struct sockaddr *) &self->generic.server_address, sizeof(self->generic.server_address));
-    return status;
+    self->generic.status = connect(self->generic.socket_fd, (struct sockaddr *) &self->generic.server_address, sizeof(self->generic.server_address));
 }
 
 /* NOLINTNEXTLINE(readability-function-cognitive-complexity) */
@@ -178,7 +176,8 @@ void tcp_handler_loop(void *s)
         /* accept is blocking and is not restarted (refer to signal_handler), break immediately if SIGINT received */
         if (signal_flag == 1)
         {
-            if (self->generic.close(self, self->generic.socket_fd) == -1)
+            self->generic.close(self, self->generic.socket_fd);
+            if (self->generic.status == -1)
             {
                 self->generic.status = EXIT_CLOSE_FD_ERROR;
                 return;
@@ -204,7 +203,8 @@ void tcp_handler_loop(void *s)
         if (self->server.pid == 0)
         {
             /* child process enters here */
-            if (self->generic.close(self, self->generic.socket_fd == -1))
+            self->generic.close(self, self->generic.socket_fd == -1);
+            if (self->generic.status == -1)
             {
                 self->generic.status = EXIT_CLOSE_FD_ERROR;
                 return;
@@ -234,7 +234,8 @@ void tcp_handler_loop(void *s)
                 }
             }
 
-            if (self->generic.close(self, self->server.socket_fd_new) == -1)
+            self->generic.close(self, self->server.socket_fd_new);
+            if (self->generic.status == -1)
             {
                 self->generic.status = EXIT_CLOSE_FD_NEW_ERROR;
                 return;
@@ -243,7 +244,8 @@ void tcp_handler_loop(void *s)
         else
         {
             /* parent process enters here */
-            if (self->generic.close(self, self->server.socket_fd_new) == -1)
+            self->generic.close(self, self->server.socket_fd_new);
+            if (self->generic.status == -1)
             {
                 self->generic.status = EXIT_CLOSE_FD_NEW_ERROR;
                 return;

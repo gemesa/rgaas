@@ -80,7 +80,8 @@ int main(int argc, char **argv)
 
     tcp_handler->client.update_server(tcp_handler, argparser->args.generic.port_number);
 
-    if (tcp_handler->client.connect(tcp_handler) == -1)
+    tcp_handler->client.connect(tcp_handler);
+    if (tcp_handler->generic.status == -1)
     {
         logger->write(logger, LOG_USER, LOG_ERR, "%s %s\n", "connect failed:", strerror(errno));
         return EXIT_FAILURE;

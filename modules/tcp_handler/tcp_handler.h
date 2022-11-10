@@ -31,8 +31,8 @@ enum
 typedef struct
 {
     void (*socket)(void *self);
-    int (*bind)(void *self, int port_number);
-    int (*close)(void *self, int fd);
+    void (*bind)(void *self, int port_number);
+    void (*close)(void *self, int fd);
     void (*read)(void *self);
     void (*write)(void *self);
     void (*free)(void *self);
@@ -48,7 +48,7 @@ typedef struct
     tcp_handler_generic_t generic;
     struct
     {
-        int (*connect)(void *self);
+        void (*connect)(void *self);
         void (*gethostbyname)(void *self, const char *name);
         struct hostent *server;
         void (*update_server)(void *self, uint16_t hostshort);
@@ -60,7 +60,7 @@ typedef struct
     tcp_handler_generic_t generic;
     struct
     {
-        int (*listen)(void *self);
+        void (*listen)(void *self);
         void (*accept)(void *self);
         void (*fork)(void *self);
         void (*setup)(void *self, unsigned int port_number);

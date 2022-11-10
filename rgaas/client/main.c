@@ -1,12 +1,8 @@
 #include <errno.h>
-#include <netdb.h>
-#include <netinet/in.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <sys/socket.h>
 #include <syslog.h>
-#include <unistd.h>
 
 #include "../../modules/argparser/argparser.h"
 #include "../../modules/logger/logger.h"
@@ -56,19 +52,23 @@ int main(int argc, char **argv)
         return EXIT_FAILURE;
     }
 
-    int socket_fd = socket(AF_INET, SOCK_STREAM, 0);
-    if (socket_fd == -1)
+    tcp_handler_client_t * tcp_handler = tcp_handler_client_new();
+
+    tcp_handler->generic.socket(tcp_handler);
+
+    if (tcp_handler->generic.socket_fd == -1)
     {
         logger->write(logger, LOG_USER, LOG_ERR, "%s %s\n", "opening socket failed:", strerror(errno));
         argparser->generic.free(argparser);
         logger->close(logger);
         logger->free(logger);
         signal_handler->free(signal_handler);
+        tcp_handler->generic.free(tcp_handler);
         return EXIT_FAILURE;
     }
 
-    struct hostent *server = gethostbyname(argparser->args.client.hostname);
-    if (server == NULL)
+    tcp_handler->client.gethostbyname(tcp_handler, argparser->args.client.hostname);
+    if (tcp_handler->client.server == NULL)
     {
         logger->write(logger, LOG_USER, LOG_ERR, "no such host\n");
         argparser->generic.free(argparser);
@@ -78,59 +78,50 @@ int main(int argc, char **argv)
         return EXIT_FAILURE;
     }
 
-    struct sockaddr_in server_address;
-    memset((char *) &server_address, 0, sizeof(server_address));
-    server_address.sin_family = AF_INET;
-    memcpy((char *) &server_address.sin_addr.s_addr,
-           (char *) server->h_addr,
-           server->h_length);
-    server_address.sin_port = htons(argparser->args.generic.port_number);
+    tcp_handler->client.update_server(tcp_handler, argparser->args.generic.port_number);
 
-    if (connect(socket_fd, (struct sockaddr *) &server_address, sizeof(server_address)) == -1)
+    if (tcp_handler->client.connect(tcp_handler) == -1)
     {
         logger->write(logger, LOG_USER, LOG_ERR, "%s %s\n", "connect failed:", strerror(errno));
         return EXIT_FAILURE;
     }
 
-    char message_buffer[MESSAGE_BUFFER_SIZE];
-    int num_of_bytes;
     while (signal_flag == 0)
     {
         logger->write(logger, LOG_USER, LOG_NOTICE, "please enter the number of random bytes to be requested: \n");
-        memset(message_buffer, 0, MESSAGE_BUFFER_SIZE);
+        memset(tcp_handler->generic.message_buffer, 0, MESSAGE_BUFFER_SIZE);
         if (argparser->args.client.test_mode == true)
         {
-            memcpy(message_buffer, "5", sizeof("5"));
+            memcpy(tcp_handler->generic.message_buffer, "5", sizeof("5"));
         }
         else
         {
-            (void) fgets(message_buffer, MESSAGE_BUFFER_SIZE, stdin);
+            (void) fgets(tcp_handler->generic.message_buffer, MESSAGE_BUFFER_SIZE, stdin);
         }
 
-        num_of_bytes = write(socket_fd, message_buffer, sizeof(message_buffer));
-        if (num_of_bytes == -1)
+        tcp_handler->generic.write(tcp_handler);
+        if (tcp_handler->generic.number_of_bytes == -1)
         {
             logger->write(logger, LOG_USER, LOG_ERR, "%s %s\n", "writing to socket failed:", strerror(errno));
             return EXIT_FAILURE;
         }
 
-        memset(message_buffer, 0, MESSAGE_BUFFER_SIZE);
-        num_of_bytes = read(socket_fd, message_buffer, MESSAGE_BUFFER_SIZE);
-        if (num_of_bytes == -1)
+        tcp_handler->generic.read(tcp_handler);
+        if (tcp_handler->generic.number_of_bytes == -1)
         {
             logger->write(logger, LOG_USER, LOG_ERR, "%s %s\n", "reading from socket failed:", strerror(errno));
             return EXIT_FAILURE;
         }
 
-        if (num_of_bytes == 0)
+        if (tcp_handler->generic.number_of_bytes == 0)
         {
             logger->write(logger, LOG_USER, LOG_ERR, "no answer received from server, connection lost\n");
             break;
         }
 
-        if (num_of_bytes > 0)
+        if (tcp_handler->generic.number_of_bytes > 0)
         {
-            logger->write(logger, LOG_USER, LOG_NOTICE, "received from server:\n%s\n", message_buffer);
+            logger->write(logger, LOG_USER, LOG_NOTICE, "received from server:\n%s\n", tcp_handler->generic.message_buffer);
         }
 
         if (argparser->args.client.test_mode == true)
@@ -139,7 +130,7 @@ int main(int argc, char **argv)
         }
     }
 
-    close(socket_fd);
+    tcp_handler->generic.close(tcp_handler, tcp_handler->generic.socket_fd);
 
     logger->close(logger);
     logger->free(logger);

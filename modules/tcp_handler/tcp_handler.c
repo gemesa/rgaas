@@ -178,7 +178,7 @@ void tcp_handler_loop(void *s)
         /* accept is blocking and is not restarted (refer to signal_handler), break immediately if SIGINT received */
         if (signal_flag == 1)
         {
-            if (self->generic.close(self, self->generic.socket_fd == -1))
+            if (self->generic.close(self, self->generic.socket_fd) == -1)
             {
                 self->generic.status = EXIT_CLOSE_FD_ERROR;
                 return;

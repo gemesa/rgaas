@@ -25,8 +25,7 @@ static unsigned char *get_rand_bytestream(size_t num_bytes)
 
     for (i = 0; i < num_bytes; i++)
     {
-        /* we ignore this warning because we do not care about the quality of the randomness */
-        /* NOLINTNEXTLINE */
+        /* NOLINTNEXTLINE(cert-msc30-c,cert-msc50-cpp) */
         stream[i] = rand();
     }
 

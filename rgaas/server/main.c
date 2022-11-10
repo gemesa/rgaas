@@ -15,14 +15,14 @@
 
 int main(int argc, char **argv)
 {
-    argparser_t *argparser = argparser_new();
+    argparser_server_t *argparser = argparser_server_new();
     logger_t *logger = logger_new();
 
-    argparser->parse(argparser, argc, argv);
-    logger->enable_verbose_output(logger, argparser->args.verbose_output);
-    logger->enable_syslog(logger, argparser->args.syslog_enabled);
+    argparser->generic.parse(argparser, argc, argv);
+    logger->enable_verbose_output(logger, argparser->args.generic.verbose_output);
+    logger->enable_syslog(logger, argparser->args.server.syslog_enabled);
 
-    if (logger->open(logger, argparser->args.log_file, "a+") == EXIT_SUCCESS)
+    if (logger->open(logger, argparser->args.server.log_file, "a+") == EXIT_SUCCESS)
     {
         logger->write(logger, LOG_USER, LOG_DEBUG, "program started\n");
     }
@@ -35,27 +35,28 @@ int main(int argc, char **argv)
 
     signal_handler->set(signal_handler);
 
-    if (argparser->status == EXIT_SUCCESS)
+    if (argparser->generic.status == EXIT_SUCCESS)
     {
-        if (argparser->non_opt_arg_found == true)
+        if (argparser->generic.non_opt_arg_found == true)
         {
-            for (int i = argparser->args.optind; i < argc; i++)
+            for (int i = argparser->args.generic.optind; i < argc; i++)
             {
-                logger->write(logger, LOG_USER, LOG_NOTICE, "non-option argument found: %s\n", argparser->args.argv[i]);
+                logger->write(logger, LOG_USER, LOG_NOTICE, "non-option argument found: %s\n", argparser->args.generic.argv[i]);
             }
         }
     }
     else
     {
-        logger->write(logger, LOG_USER, LOG_NOTICE, argparser->usage_info);
+        logger->write(logger, LOG_USER, LOG_NOTICE, argparser->generic.usage_info);
+        logger->write(logger, LOG_USER, LOG_NOTICE, argparser->generic.usage_info_generic);
         logger->close(logger);
         logger->free(logger);
-        argparser->free(argparser);
+        argparser->generic.free(argparser);
         signal_handler->free(signal_handler);
         return EXIT_FAILURE;
     }
 
-    if (argparser->args.process_mode == DAEMON_PROCESS)
+    if (argparser->args.server.process_mode == DAEMON_PROCESS)
     {
         if (daemon(0, 0) == EXIT_SUCCESS)
         {
@@ -69,7 +70,7 @@ int main(int argc, char **argv)
 
     tcp_handler_t *tcp_handler = tcp_handler_new();
 
-    tcp_handler->setup(tcp_handler, argparser->args.port_number);
+    tcp_handler->setup(tcp_handler, argparser->args.generic.port_number);
     switch (tcp_handler->status)
     {
         case EXIT_SOCKET_ERROR:
@@ -115,7 +116,7 @@ int main(int argc, char **argv)
     logger->write(logger, LOG_USER, LOG_DEBUG, "program terminating...\n");
     logger->close(logger);
     logger->free(logger);
-    argparser->free(argparser);
+    argparser->generic.free(argparser);
     signal_handler->free(signal_handler);
     tcp_handler->free(tcp_handler);
 

@@ -18,25 +18,54 @@ typedef struct
     int argc;
     char **argv;
     int optind;
-    bool test_mode;
-    char *hostname;
     unsigned int port_number;
     bool verbose_output;
-    process_mode_t process_mode;
-    bool syslog_enabled;
-    char *log_file;
-} args_t;
+} args_generic_t;
+
+typedef struct
+{
+    args_generic_t generic;
+    struct
+    {
+        bool test_mode;
+        char *hostname;
+    } client;
+} args_client_t;
+
+typedef struct
+{
+    args_generic_t generic;
+    struct
+    {
+        bool syslog_enabled;
+        process_mode_t process_mode;
+        char *log_file;
+    } server;
+} args_server_t;
 
 typedef struct
 {
     void (*parse)(void *self, int argc, char **argv);
     void (*free)(void *self);
-    args_t args;
+    char *usage_info_generic;
+    char *usage_info;
     int status;
     bool non_opt_arg_found;
-    char *usage_info;
-} argparser_t;
+} argparser_generic_t;
 
-extern argparser_t *argparser_new(void);
+typedef struct
+{
+    argparser_generic_t generic;
+    args_client_t args;
+} argparser_client_t;
+
+typedef struct
+{
+    argparser_generic_t generic;
+    args_server_t args;
+} argparser_server_t;
+
+extern argparser_client_t *argparser_client_new(void);
+extern argparser_server_t *argparser_server_new(void);
 
 #endif//RGAAS_ARGPARSER_H

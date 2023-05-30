@@ -51,6 +51,23 @@ Open an other terminal:
 ```bash
 $ ./build/rgaas-client -n <hostname> -p 8000 -v
 ```
+## Example
+
+```bash
+$ ./build/rgaas-server -p 8000 -v
+15 rgaas - program started
+15 rgaas - tcp setup successful
+```
+
+```bash
+$ ./build/rgaas-client -n fedora -p 8000 -v
+15 rgaas - program started
+13 rgaas - please enter the number of random bytes to be requested: 
+100
+13 rgaas - received from server:
+�1X�Z%]X�^ԫ��ƛ�T�tA!=܇p�>�A��g>~���k��8\*�;�2�<T��\��C
+13 rgaas - please enter the number of random bytes to be requested: 
+```
 
 ## For developers
 

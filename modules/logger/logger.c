@@ -2,6 +2,7 @@
 // Created by gemesa on 11/3/22.
 //
 
+#include <stdarg.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
